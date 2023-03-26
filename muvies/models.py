@@ -127,3 +127,12 @@ class Review(models.Model):
     parent = models.ForeignKey(
         'self', verbose_name='Родитель', on_delete=models.CASCADE, blank=True, null=True
     )
+
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+
+    def __str__(self):
+        return f'{self.name} - {self.email}'
+
+
