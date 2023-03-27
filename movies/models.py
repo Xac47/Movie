@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.db import models
+from django.urls import reverse
 
 
 class Category(models.Model):
@@ -15,6 +16,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('list-category', kwargs={'slug': self.url})
 
 
 class Actor(models.Model):
@@ -80,6 +84,14 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse('movie', kwargs={'slug': self.url})
+
+    def slice(self, start:int=None, end:int=None):
+        desc = self.desc.splite()
+        return desc[start:end]
+
+
 
 class MovieShots(models.Model):
     """ Кадры из фильма """
@@ -121,6 +133,7 @@ class Rating(models.Model):
 
 class Review(models.Model):
     """ Отзывы """
+    image = models.ImageField('Фото', default='no-avatar.png')
     email = models.EmailField()
     name = models.CharField('Имя', max_length=20)
     text = models.TextField('Сообщение', max_length=5000)
