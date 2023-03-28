@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'movies.apps.MoviesConfig',
+    'contact.apps.ContactConfig',
 ]
 
 MIDDLEWARE = [
