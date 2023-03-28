@@ -1,3 +1,5 @@
+{% load contact_tags %}
+
 <footer class="editContent">
     <div class="container">
         <div class="row footer-top">
@@ -44,9 +46,10 @@
 
                     <p class="editContent">By subscribing to our mailing list you will always get latest news and
                         updates from us.</p>
-                    <form action="#" method="post" class="w3layouts-newsletter">
-                        <input type="email" name="Email" class="editContent" placeholder="Enter your email..."
-                               required="">
+                        {% get_subscribe_email_form as form %}
+                    <form action="{% url 'subscribe-email' %}" method="post" class="w3layouts-newsletter">
+                        {% csrf_token %}
+                        {{ form }}
                         <button class="btn1 btn"><span class="fa fa-paper-plane-o" aria-hidden="true"></span></button>
 
                     </form>
