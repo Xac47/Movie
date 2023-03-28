@@ -1,7 +1,7 @@
 from django.db import models
 
 class SubscribeEmail(models.Model):
-    email = models.EmailField(max_length=90, unique=True)
+    email = models.EmailField(max_length=90)
     create_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
