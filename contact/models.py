@@ -1,3 +1,13 @@
 from django.db import models
 
-# Create your models here.
+class SubscribeEmail(models.Model):
+    email = models.EmailField(max_length=90, unique=True)
+    create_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'E-mail'
+        verbose_name_plural = 'E-mails'
+
+    def __str__(self):
+        return f'{self.email} - {self.create_at}'
+
