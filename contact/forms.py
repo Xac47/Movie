@@ -3,7 +3,7 @@ from django import forms
 from contact.models import SubscribeEmail
 
 
-class EmailForm(forms.ModelForm):
+class SubscribeEmailForm(forms.ModelForm):
     class Meta:
         model = SubscribeEmail
         fields = ('email',)
