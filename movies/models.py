@@ -91,6 +91,9 @@ class Movie(models.Model):
         desc = self.desc.splite()
         return desc[start:end]
 
+    def get_comments(self):
+        return self.review_set.filter(parent__isnull=True)
+
 
 
 class MovieShots(models.Model):
@@ -133,7 +136,6 @@ class Rating(models.Model):
 
 class Review(models.Model):
     """ Отзывы """
-    image = models.ImageField('Фото', default='no-avatar.png')
     email = models.EmailField()
     name = models.CharField('Имя', max_length=20)
     text = models.TextField('Сообщение', max_length=5000)
