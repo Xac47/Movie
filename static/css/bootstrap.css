@@ -481,12 +481,10 @@ mark,
   max-width: 100%;
   height: auto;
 }
-
-.img-movie-shots{
+.img-movie-shots {
   max-width: 250px;
   height: auto;
 }
-
 .img-thumbnail {
   padding: 0.25rem;
   background-color: #fff;
@@ -8977,4 +8975,3 @@ a.text-dark:hover, a.text-dark:focus {
     border: 1px solid #ddd !important;
   }
 }
-/*# sourceMappingURL=bootstrap.css.map */
