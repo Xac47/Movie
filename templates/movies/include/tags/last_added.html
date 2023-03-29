@@ -6,7 +6,7 @@
         </div>
         <div class="img-deal1 col-md-4">
             <h3 class="editContent">{{ post.title }}</h3>
-            <a href="moviesingle.html" class="editContent"></a>
+            <a href="{{ post.get_absolute_url }}" class="editContent">.</a>
         </div>
     </div>
 {% endfor %}
