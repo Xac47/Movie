@@ -3,6 +3,18 @@ from django.utils.safestring import mark_safe
 
 from .models import Category, Actor, Genre, Movie, MovieShots, RatingStar, Rating, Review
 
+
+from django import forms
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
+class MovieAdminForm(forms.ModelForm):
+    desc = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
+    class Meta:
+        model = Movie
+        fields = '__all__'
+
+
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'url')
@@ -33,12 +45,38 @@ class MovieAdmin(admin.ModelAdmin):
     list_filter = ('category', 'year')
     search_fields = ('title', 'category__name')
     inlines = (MovieShotsInline, ReviewInline)
+    actions = ["publish", "unpublish"]
+    form = MovieAdminForm
     save_on_top = True
     save_as = True
     list_editable = ('draft',)
 
     def get_image(self, obj):
         return mark_safe(f'<img src={obj.poster.url} width="150" height="150">')
+
+    def unpublish(self, request, queryset):
+        """Снять с публикации"""
+        row_update = queryset.update(draft=True)
+        if row_update == 1:
+            message_bit = "1 запись была обновлена"
+        else:
+            message_bit = f"{row_update} записей были обновлены"
+        self.message_user(request, f"{message_bit}")
+
+    def publish(self, request, queryset):
+        """Опубликовать"""
+        row_update = queryset.update(draft=False)
+        if row_update == 1:
+            message_bit = "1 запись была обновлена"
+        else:
+            message_bit = f"{row_update} записей были обновлены"
+        self.message_user(request, f"{message_bit}")
+
+    publish.short_description = "Опубликовать"
+    publish.allowed_permissions = ('change', )
+
+    unpublish.short_description = "Снять с публикации"
+    unpublish.allowed_permissions = ('change',)
 
     get_image.short_description = "Изображение"
 
