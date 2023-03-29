@@ -35,6 +35,9 @@ class Actor(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('actor', kwargs={'name': self.name})
+
 
 class Genre(models.Model):
     """ Жанры """
