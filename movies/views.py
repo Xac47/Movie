@@ -4,27 +4,36 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 
 from movies.forms import ReviewForm
-from movies.models import Movie, Actor
+from movies.models import Movie, Actor, Genre
 
 
-class MoviesListView(ListView):
+class GenreYear:
+
+    def get_genres(self):
+        return Genre.objects.all()
+
+    def get_years(self):
+        return Movie.objects.filter(draft=False).values('year')
+
+
+class MoviesListView(GenreYear, ListView):
     model = Movie
 
     def get_queryset(self):
         return Movie.objects.filter(draft=False).order_by('-create_at')
 
 
-class CategoryListView(ListView):
+class CategoryListView(GenreYear, ListView):
     model = Movie
 
     def get_queryset(self):
         return Movie.objects.filter(
             Q(category__url=self.kwargs.get('slug')) &
             Q(draft=False)
-        ).select_related('category')
+        ).select_related('category').order_by('-create_at')
 
 
-class SearchView(ListView):
+class SearchView(GenreYear, ListView):
     model = Movie
 
     def get_queryset(self):
@@ -34,7 +43,16 @@ class SearchView(ListView):
         ).order_by('-create_at')
 
 
-class MovieDetailView(FormMixin, DetailView):
+class FilterMovieView(GenreYear, ListView):
+
+    def get_queryset(self):
+        return Movie.objects.filter(
+            Q(year__in=self.request.GET.getlist('year')) |
+            Q(genres__in=self.request.GET.getlist('genre'))
+        )
+
+
+class MovieDetailView(FormMixin, GenreYear, DetailView):
     model = Movie
     queryset = Movie.objects.filter(draft=False)
     slug_field = 'url'
@@ -57,6 +75,7 @@ class MovieDetailView(FormMixin, DetailView):
             self.object.parent_id = int(self.request.POST.get('parent'))
         self.object.save()
         return super().form_valid(form)
+
 
 class ActorDetailView(DetailView):
     model = Actor
