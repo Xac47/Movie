@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormMixin
 
 from movies.forms import ReviewForm
-from movies.models import Movie
+from movies.models import Movie, Actor
 
 
 class MoviesListView(ListView):
@@ -58,3 +58,9 @@ class MovieDetailView(FormMixin, DetailView):
         self.object.save()
         return super().form_valid(form)
 
+class ActorDetailView(DetailView):
+    model = Actor
+    template_name = 'movies/actor.html'
+    context_object_name = 'actor'
+    slug_field = 'name'
+    slug_url_kwarg = 'name'
