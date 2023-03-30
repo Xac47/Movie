@@ -4,15 +4,15 @@
 
 <div class="left-ads-display col-lg-9">
     <div class="row">
+        {% for post in movie_list %}
         <div class="col-md-4 product-men">
-            {% for post in movie_list %}
             <div class="product-shoe-info editContent text-center mt-lg-4">
                 <div class="men-thumb-item">
                     <img src="{{ post.poster.url }}" class="img-fluid" alt="">
                 </div>
                 <div class="item-info-product">
                     <h4>
-                        <a href="moviesingle.html" class="editContent">{{ post.title }}</a>
+                        <a href="{{ post.get_absolute_url }}" class="editContent">{{ post.title }}</a>
                     </h4>
 
                     <div class="product_price">
@@ -30,8 +30,8 @@
                     </ul>
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
     <!--<div class="grid-img-right mt-4 text-right bg bg1" >
         <span class="money editContent" >Flat 50% Off</span>
