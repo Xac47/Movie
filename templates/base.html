@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-{% load static movie_tags %}
+{% load static movie_tags recaptcha3 %}
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
@@ -18,6 +18,10 @@
     <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900"
           rel="stylesheet">
     <!-- //Fonts -->
+
+    {% recaptcha_init %}
+    {% recaptcha_ready action_name='homepage' %}
+
 </head>
 <body>
 
