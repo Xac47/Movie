@@ -1,12 +1,14 @@
 from django import forms
+from snowpenguin.django.recaptcha3.fields import ReCaptchaField
 
 from movies.models import Review, Rating, RatingStar
 
 
 class ReviewForm(forms.ModelForm):
+    captcha = ReCaptchaField()
     class Meta:
         model = Review
-        fields = ('name', 'email', 'text')
+        fields = ('name', 'email', 'text', 'captcha')
         labels = {
             'name': '',
             'email': '',
