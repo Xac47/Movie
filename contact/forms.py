@@ -1,12 +1,15 @@
 from django import forms
+from snowpenguin.django.recaptcha3.fields import ReCaptchaField
 
 from contact.models import SubscribeEmail
 
 
 class SubscribeEmailForm(forms.ModelForm):
+    captch = ReCaptchaField()
+
     class Meta:
         model = SubscribeEmail
-        fields = ('email',)
+        fields = ('email', 'captch')
         labels = {
             'email': ''
         }
