@@ -20,6 +20,7 @@ class GenreYear:
 
 class MoviesListView(GenreYear, ListView):
     model = Movie
+    paginate_by = 9
 
     def get_queryset(self):
         return Movie.objects.filter(draft=False).order_by('-create_at')
@@ -27,6 +28,7 @@ class MoviesListView(GenreYear, ListView):
 
 class CategoryListView(GenreYear, ListView):
     model = Movie
+    paginate_by = 9
 
     def get_queryset(self):
         return Movie.objects.filter(
@@ -36,7 +38,7 @@ class CategoryListView(GenreYear, ListView):
 
 
 class SearchView(GenreYear, ListView):
-    model = Movie
+    paginate_by = 1
 
     def get_queryset(self):
         return Movie.objects.filter(
@@ -44,14 +46,26 @@ class SearchView(GenreYear, ListView):
             Q(draft=False)
         ).order_by('-create_at')
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["q"] = f'q={self.request.GET.get("q")}&'
+        return context
+
 
 class FilterMovieView(GenreYear, ListView):
+    paginate_by = 9
 
     def get_queryset(self):
         return Movie.objects.filter(
             Q(year__in=self.request.GET.getlist('year')) |
             Q(genres__in=self.request.GET.getlist('genre'))
-        )
+        ).order_by('-create_at').distinct()
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx["year"] = ''.join([f"year={x}&" for x in self.request.GET.getlist("year")])
+        ctx["genre"] = ''.join([f"genre={x}&" for x in self.request.GET.getlist("genre")])
+        return ctx
 
 
 class MovieDetailView(FormMixin, GenreYear, DetailView):
