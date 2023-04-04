@@ -30,19 +30,6 @@
     <!--navbar-->
     {% include 'include/navbar.html' %}
     <!--end navbar-->
-
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-success">
-        <button type="reset" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        {{ message }}
-    </div>
-    {% endfor %}
-    {% endif %}
-
-
     <ol class="breadcrumb editContent">
         <li class="breadcrumb-item">
             <a href="{% url 'home' %}" class="editContent">Home</a>
