@@ -3,16 +3,18 @@ from django.utils.safestring import mark_safe
 
 from .models import Category, Actor, Genre, Movie, MovieShots, RatingStar, Rating, Review
 
-
 from django import forms
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
+from .tasks import send_new_movie_notification_to_email
+
+
 class MovieAdminForm(forms.ModelForm):
     desc = forms.CharField(label='Описание', widget=CKEditorUploadingWidget())
+
     class Meta:
         model = Movie
         fields = '__all__'
-
 
 
 @admin.register(Category)
@@ -37,9 +39,10 @@ class MovieShotsInline(admin.TabularInline):
 
     get_image.short_description = "Изображение"
 
+
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'url', 'get_image',  'draft')
+    list_display = ('title', 'category', 'url', 'get_image', 'draft')
     list_display_links = ('title', 'category', 'url')
     readonly_fields = ('get_image',)
     list_filter = ('category', 'year')
@@ -73,12 +76,17 @@ class MovieAdmin(admin.ModelAdmin):
         self.message_user(request, f"{message_bit}")
 
     publish.short_description = "Опубликовать"
-    publish.allowed_permissions = ('change', )
+    publish.allowed_permissions = ('change',)
 
     unpublish.short_description = "Снять с публикации"
     unpublish.allowed_permissions = ('change',)
 
     get_image.short_description = "Изображение"
+
+    def save_model(self, request, obj, form, change):
+        send_new_movie_notification_to_email(form.cleaned_data['title'])
+        return super().save_model(request, obj, form, change)
+
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
@@ -100,6 +108,7 @@ class ActorAdmin(admin.ModelAdmin):
 
     get_image.short_description = "Изображение"
 
+
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'url')
@@ -118,6 +127,7 @@ class MovieShotsAdmin(admin.ModelAdmin):
         return mark_safe(f'<img src={obj.image.url} width="50" height="50">')
 
     get_image.short_description = "Изображение"
+
 
 @admin.register(RatingStar)
 class RatingStarAdmin(admin.ModelAdmin):
