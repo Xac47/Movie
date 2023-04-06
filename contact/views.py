@@ -1,14 +1,1 @@
-from django.shortcuts import render
-from django.urls import reverse
-from django.views.generic import CreateView
-
-from contact.forms import SubscribeEmailForm
-from contact.models import SubscribeEmail
-
-
-class SubscribeEmailView(CreateView):
-    model = SubscribeEmail
-    form_class = SubscribeEmailForm
-
-    def get_success_url(self):
-        return reverse('home')
+from django.contrib.messages.views import SuccessMessageMixinfrom django.shortcuts import renderfrom django.urls import reversefrom django.views.generic import CreateViewfrom contact.forms import SubscribeEmailFormfrom contact.models import SubscribeEmailfrom .tasks import send_message_to_email_about_subscribeclass SubscribeEmailView(SuccessMessageMixin, CreateView):    model = SubscribeEmail    form_class = SubscribeEmailForm    success_message = 'Спасибо за подписку!'    def post(self, request, *args, **kwargs):        form = self.get_form()        if form.is_valid():            return self.form_valid(form)        else:            return self.form_invalid(form)    def form_valid(self, form):        form.save()        send_message_to_email_about_subscribe.delay(form.cleaned_data['email'])        return super().form_valid(form)    def get_success_url(self):        return reverse('home')
