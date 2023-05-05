@@ -84,7 +84,8 @@ class MovieAdmin(admin.ModelAdmin):
     get_image.short_description = "Изображение"
 
     def save_model(self, request, obj, form, change):
-        send_new_movie_notification_to_email(form.cleaned_data['title'])
+        if change is False:
+            send_new_movie_notification_to_email(form.cleaned_data['title'])
         return super().save_model(request, obj, form, change)
 
 
